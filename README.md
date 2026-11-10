@@ -131,8 +131,9 @@ The Python suite uses temporary databases, synthetic accounts, and mocked Gemini
 
 The repository includes a `Procfile` and Render configuration. Configure `SECRET_KEY` and `GEMINI_API_KEY` in the hosting provider's environment settings. Use persistent storage for SQLite if the host's filesystem is ephemeral, and back up the database before upgrades.
 
-<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/17886b52-2d12-48eb-810c-3035cb5a68b1" />
-<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/76826db4-6f9b-442f-97e1-676e1e4773d5" />
-<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/560a21f3-fc49-4344-8bac-31a9e66449fa" />
-<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/39566354-3224-4b0d-9274-936c94ff667a" />
+
+<img width="1920" height="903" alt="Screenshot 2026-11-10 235820" src="https://github.com/user-attachments/assets/158cbb05-acb2-465d-94ae-52afd0503631" />
+<img width="1920" height="903" alt="Screenshot 2026-11-10 235804" src="https://github.com/user-attachments/assets/4139a957-6af9-4ec5-95c5-6c6cdbcc7c39" />
+<img width="1920" height="907" alt="Screenshot 2026-11-10 235502" src="https://github.com/user-attachments/assets/9aa691be-6b80-4f86-a3e9-786c0a033ee4" />
+<img width="1920" height="911" alt="Screenshot 2026-11-10 235353" src="https://github.com/user-attachments/assets/c4c9dda4-974f-4e1a-a165-22ed2470b164" />
 
