@@ -1,148 +1,136 @@
-# Gemini Multimodal Chatbot
+# MYGPT
 
-A Flask + vanilla-JS web app that wraps Google's **Gemini** models in a clean,
-modern chat interface. It handles **text, images, and PDFs** in a single
-conversation, persists history to SQLite, and supports browser voice input.
-
-The frontend is a single self-contained page with **no server-side template
-tags**, so it renders correctly whether you open the file directly, preview it,
-or serve it through the backend. Open it with no backend running and it shows a
-styled preview with example prompts; run the backend and it goes live.
-
-Built on the current unified **`google-genai`** SDK. The legacy
-`google-generativeai` package and the `gemini-pro` / `gemini-pro-vision` model
-names it used are both retired.
-
----
+MYGPT is a personal, multi-user AI chat application built with Flask, vanilla JavaScript, SQLite, and the Google Gemini API. It keeps each account's profile, preferences, conversations, and messages private to that account.
 
 ## Features
 
-- **Multimodal** — plain text, text + image (vision), or text + PDF in one chat.
-- **PDF Q&A** — uploaded PDFs are parsed and chunked into context automatically.
-- **Persistent history** — every turn (images included) is stored in SQLite and reloaded on refresh.
-- **Voice input** — dictate messages via the Web Speech API where supported.
-- **Preview mode** — with no backend, the UI still renders fully and explains how to go live.
-- **One-command deploy** — ships with `Procfile` and `render.yaml` for Render.
+- Account registration, login, logout, and signed Flask sessions.
+- User profiles and per-account assistant name, response style, and custom instructions.
+- Separate conversations with automatic titles, rename, delete, and search.
+- Conversation history stored in SQLite and scoped to the authenticated user.
+- Gemini text responses, image uploads, and PDF question answering.
+- Browser voice input, responsive MYGPT interface, typing animation, and Markdown rendering.
+- Backend validation for uploads and request inputs, with safe JSON errors.
 
----
+## Technologies
 
-## Tech stack
-
-| Layer     | Choice                                               |
-| --------- | ---------------------------------------------------- |
-| Backend   | Python 3.9+, Flask, Gunicorn                         |
-| AI        | Google Gen AI SDK (`google-genai`), Gemini 3.5 Flash |
-| PDF       | `pypdf`                                              |
-| Storage   | SQLite (standard library)                            |
-| Frontend  | Self-contained HTML + CSS + vanilla JS               |
-| Config    | `python-dotenv`                                      |
-| Tests     | `pytest`                                             |
-
----
+- Python, Flask, and Gunicorn
+- Google Gen AI SDK (`google-genai`)
+- SQLite
+- HTML, CSS, and vanilla JavaScript
+- `pypdf` for PDF processing
+- pytest and Node.js tests
 
 ## Project structure
 
-```
+```text
 chatbot/
-├── app.py                 # Flask API + static host + Gemini integration
-├── requirements.txt
-├── Procfile               # gunicorn entry point (Render / Heroku)
-├── render.yaml            # one-click Render deploy config
-├── .env.example           # copy to .env and add your key
-├── .gitignore
-├── LICENSE
-├── README.md
+├── app.py                 # Flask routes, Gemini integration, and SQLite access
 ├── static/
-│   └── index.html         # the entire frontend (no templating)
-└── tests/
-    └── test_app.py        # offline test suite (Gemini call mocked)
+│   └── index.html         # MYGPT interface, styles, and browser JavaScript
+├── tests/
+│   ├── test_app.py        # API, database, auth, isolation, and upload tests
+│   └── test_markdown_security.js
+├── requirements.txt       # Runtime dependencies
+├── requirements-dev.txt   # Test dependencies
+├── pytest.ini
+├── .env.example           # Safe configuration template
+├── Procfile
+└── render.yaml
 ```
 
----
+## Local installation
 
-## Quick start
+Use Python 3.9 or newer and Node.js to run the JavaScript security tests.
+Clone the repository and change into its directory before following the setup steps:
 
 ```bash
 git clone https://github.com/21pravi/chatbot.git
 cd chatbot
-
-python -m venv .venv
-source .venv/bin/activate           # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-
-cp .env.example .env                 # then paste your key into .env
-python app.py                        # open http://localhost:5000
 ```
 
-Get a free API key from **[Google AI Studio](https://aistudio.google.com/apikey)**
-and put it in `.env` as `GEMINI_API_KEY=...`.
+### Windows PowerShell
 
-> Just want to see the interface? Open `static/index.html` directly in a browser.
-> It renders in preview mode (no live answers until the backend is running).
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt -r requirements-dev.txt
+Copy-Item .env.example .env
+```
 
----
-
-## Usage
-
-- **Text** — type and press Enter (Shift+Enter for a new line).
-- **Image** — click the image icon, pick a file, ask *"what's in this picture?"*
-- **PDF** — click the PDF icon, pick a file, ask a question about its contents.
-- **Voice** — click the mic and speak (Chrome/Edge).
-- **New chat** clears the current view; history persists in the sidebar.
-
----
-
-## Configuration
-
-All optional, via environment variables (see `.env.example`):
-
-| Variable         | Default            | Purpose                                     |
-| ---------------- | ------------------ | ------------------------------------------- |
-| `GEMINI_API_KEY` | —                  | Your Gemini key (required for live replies) |
-| `GEMINI_MODEL`   | `gemini-3.5-flash` | Which Gemini model to call                  |
-| `CHATBOT_DB`     | `chatbot_data.db`  | SQLite database file                        |
-| `PORT`           | `5000`             | Port for `python app.py`                    |
-
-`GOOGLE_API_KEY` works as an alias for `GEMINI_API_KEY`.
-
----
-
-## API
-
-| Method | Route          | Purpose                                            |
-| ------ | -------------- | -------------------------------------------------- |
-| GET    | `/`            | Serves the chat interface                          |
-| GET    | `/api/history` | `{ model, api_ready, history[] }`                  |
-| POST   | `/api/chat`    | `multipart/form-data`: `prompt`, `image?`, `pdf_file?` → `{ response }` or `{ error }` |
-
----
-
-## Testing
-
-The suite mocks the Gemini network call, so it runs fully offline with no key:
+### macOS or Linux
 
 ```bash
-pip install pytest
-pytest -q
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt -r requirements-dev.txt
+cp .env.example .env
 ```
 
-Covers the text/image/PDF flow, utility functions, the SQLite round-trip, all
-routes, the history endpoint, and error handling.
+## Environment configuration
 
----
+Edit `.env` and set a persistent Flask signing key and your Gemini API key. Generate a strong signing key locally with:
 
-## Deploy to Render
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(48))"
+```
 
-1. Push this repo to GitHub.
-2. On [Render](https://render.com), create a **New Web Service** from the repo
-   (it auto-detects `render.yaml`).
-3. Add `GEMINI_API_KEY` in the service's **Environment** settings.
-4. Deploy. Render runs `gunicorn app:app`.
+Paste the generated value into `SECRET_KEY` in `.env`. Keep `.env` private and do not commit it. Keep the same signing key between restarts so existing sessions remain valid. Production startup fails when `SECRET_KEY` is missing.
 
-For any other host, the entry point is `gunicorn app:app`.
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `SECRET_KEY` | Required | Signs Flask session cookies; never sent to the browser. |
+| `GEMINI_API_KEY` | None | Enables live Gemini responses. `GOOGLE_API_KEY` is also accepted. |
+| `GEMINI_MODEL` | `gemini-3.5-flash` | Gemini model name. |
+| `CHATBOT_DB` | `chatbot_data.db` | SQLite database path. |
+| `MAX_UPLOAD_SIZE_MB` | `10` | Maximum total request size in MiB. |
+| `APP_ENV` | `development` | Set to `production` for production startup checks. |
+| `PORT` | `5000` | Local or hosting server port. |
 
----
+`MAX_UPLOAD_SIZE_MB` must be a positive integer. Image uploads are restricted to supported formats and checked on the server. PDF files are signature and parser validated.
+
+## Database setup and data
+
+On startup, MYGPT initializes the SQLite schema and applies safe, repeatable additive migrations. The `users` table stores profiles and personalization. `conversations` stores owner, title, and timestamps. `chat_history` stores each prompt/response pair and links it to its user and, when applicable, a conversation.
+
+Foreign-key enforcement is enabled and verified for every application database connection. Existing history without a conversation ID remains available as individual legacy entries only to its recorded owner. Rows without an owner are not exposed to users. Back up an existing database before moving or replacing it; never commit database files or backups.
+
+## Conversation API
+
+All conversation endpoints require an authenticated session. Ownership always comes from the session, not a request parameter.
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/conversations?q=...` | List or search the current user's conversations and owned legacy entries. |
+| `POST` | `/api/conversations` | Create an empty conversation. |
+| `GET` | `/api/conversations/<id>` | Load an owned conversation and its messages. |
+| `PATCH` | `/api/conversations/<id>` | Rename an owned conversation. |
+| `DELETE` | `/api/conversations/<id>` | Delete an owned conversation and its messages. |
+| `POST` | `/api/chat` | Send a prompt/upload; include `conversation_id` to continue a conversation. |
+
+New conversation titles are generated from the first user prompt. Legacy rows with an assigned owner remain individually viewable but read-only; unassigned rows are not listed or searchable.
+
+## Run MYGPT
+
+```bash
+python app.py
+```
+
+Open [http://localhost:5000](http://localhost:5000). Set `GEMINI_API_KEY` to enable live AI replies. The interface can still be previewed without a running backend by opening `static/index.html` directly, but authentication and persistence require Flask.
+
+## Run tests
+
+```bash
+python -m pytest -q
+node --test tests/test_markdown_security.js
+```
+
+The Python suite uses temporary databases, synthetic accounts, and mocked Gemini calls. It covers authentication, multi-user ownership, profiles and preferences, conversations, uploads, validation, and safe errors. The Node.js suite checks Markdown link safety and inline frontend JavaScript syntax.
+
+## Deployment
+
+The repository includes a `Procfile` and Render configuration. Configure `SECRET_KEY` and `GEMINI_API_KEY` in the hosting provider's environment settings. Use persistent storage for SQLite if the host's filesystem is ephemeral, and back up the database before upgrades.
 
 ## License
 
-[MIT](LICENSE)
+MYGPT is distributed under the MIT License; see [LICENSE](LICENSE).

@@ -1,5 +1,5 @@
 # One-click deploy config for Render (https://render.com).
-# Add GEMINI_API_KEY in the Render dashboard after the first deploy.
+# Add SECRET_KEY and GEMINI_API_KEY in the Render dashboard after the first deploy.
 services:
   - type: web
     name: gemini-chatbot
@@ -8,6 +8,10 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
+      - key: APP_ENV
+        value: production
+      - key: SECRET_KEY
+        sync: false
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL

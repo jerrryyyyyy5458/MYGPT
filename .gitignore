@@ -1,6 +1,7 @@
 # Environment / secrets
 .env
 *.env
+.env.*
 !.env.example
 
 # Python
@@ -10,15 +11,28 @@ __pycache__/
 .venv/
 venv/
 env/
+ENV/
 
 # App data
-*.db
-chatbot_data.db
+*.db*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sqlite3-*
+*-backup-*/
+*.bak
+*.backup
+*.dump
 
 # Tooling
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .coverage
 htmlcov/
+dist/
+build/
+*.log
 
 # OS / editor
 .DS_Store

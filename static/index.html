@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="A Gemini-powered multimodal chatbot — text, images and PDFs in one conversation." />
-  <title>Gemini Chatbot</title>
+  <title> MYGPT | Your Personal AI </title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -17,19 +17,27 @@
   />
   <style>
     :root {
-      --ink: #0f1b2d;
-      --ink-soft: #33425a;
-      --mist: #6b7a90;
-      --azure: #2f6bdf;
-      --azure-deep: #1e4fb0;
-      --azure-tint: #eef3fe;
-      --paper: #f4f7fb;
-      --panel: #ffffff;
-      --line: #e4e9f2;
-      --line-soft: #eef1f7;
-      --gold: #e8a33d;
-      --danger: #c0392b;
-      --shadow: 0 1px 2px rgba(15,27,45,0.04), 0 10px 30px rgba(15,27,45,0.07);
+
+    --ink: #30283D;
+    --ink-soft: #514A61;
+    --mist: #89839B;
+
+    --azure: #9276E8;
+    --azure-deep: #7658D5;
+    --azure-tint: #F0EBFF;
+
+    --paper: #F8F6FC;
+    --panel: #FFFFFF;
+
+    --line: #E9E2F2;
+    --line-soft: #F3EFF8;
+
+    --gold: #F3A46B;
+    --danger: #C0392B;
+
+    --shadow: 0 1px 2px rgba(80, 55, 120, 0.04),
+              0 10px 30px rgba(120, 90, 170, 0.09);
+
       --sans: "Figtree", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
       --serif: "Newsreader", Georgia, serif;
       --mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
@@ -43,6 +51,44 @@
       -webkit-font-smoothing: antialiased;
     }
     button { font-family: inherit; cursor: pointer; }
+
+    /* ---------- Existing MYGPT authentication panel ---------- */
+    #auth-screen { display: none; min-height: 100vh; align-items: center; justify-content: center; padding: 24px; background: var(--paper); }
+    body:not(.authenticated) #auth-screen { display: flex; }
+    body:not(.authenticated) .shell { display: none; }
+    body.authenticated #auth-screen { display: none; }
+    .auth-card { width: min(100%, 420px); padding: 32px; border: 1px solid var(--line); border-radius: 20px; background: var(--panel); box-shadow: var(--shadow); }
+    .auth-brand { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--ink); }
+    .auth-logo { color: var(--azure); font-size: 1.8rem; }
+    .auth-brand h1 { margin: 0; font: 600 1.8rem var(--serif); }
+    .auth-subtitle, .auth-card > div > p { color: var(--mist); text-align: center; }
+    .auth-card h2 { margin: 24px 0 6px; text-align: center; font: 500 1.45rem var(--serif); }
+    .auth-card input { width: 100%; margin: 7px 0; padding: 12px 13px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--panel); font: inherit; }
+    .auth-card input:focus { outline: 2px solid var(--azure-tint); border-color: var(--azure); }
+    .auth-card button { width: 100%; margin-top: 10px; padding: 12px; border: 0; border-radius: 10px; color: white; background: var(--azure); font-weight: 700; }
+    .auth-card button:hover { background: var(--azure-deep); }
+    .auth-card a { color: var(--azure-deep); }
+    #auth-message { min-height: 1.4em; margin-bottom: 0; color: var(--danger); text-align: center; }
+    #auth-message.success { color: #218653; }
+    .account { display: flex; align-items: center; gap: 7px; color: var(--ink-soft); font-size: .85rem; white-space: nowrap; }
+    #current-user { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+    .logout-btn { padding: 7px 11px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); color: var(--ink-soft); font-weight: 600; }
+    .logout-btn:hover { border-color: var(--azure); color: var(--azure-deep); }
+    .settings-dialog { width: min(92vw, 520px); max-height: 90dvh; overflow-y: auto; padding: 0; border: 1px solid var(--line); border-radius: 18px; color: var(--ink); background: var(--panel); box-shadow: var(--shadow); }
+    .settings-dialog::backdrop { background: rgba(48, 40, 61, .42); backdrop-filter: blur(3px); }
+    .settings-content { padding: 24px; }
+    .settings-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .settings-heading h2 { margin: 0; font: 500 1.45rem var(--serif); }
+    .settings-close { border: 0; background: transparent; color: var(--mist); font-size: 1.35rem; }
+    .settings-content label { display: block; margin: 14px 0 6px; color: var(--ink-soft); font-size: .86rem; font-weight: 600; }
+    .settings-content input, .settings-content select, .settings-content textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--panel); font: inherit; }
+    .settings-content textarea { min-height: 110px; resize: vertical; }
+    .settings-content input:focus, .settings-content select:focus, .settings-content textarea:focus { outline: 2px solid var(--azure-tint); border-color: var(--azure); }
+    .settings-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+    .settings-actions button { padding: 9px 14px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); color: var(--ink-soft); font: 600 .9rem var(--sans); }
+    .settings-actions #save-settings { border-color: var(--azure); color: white; background: var(--azure); }
+    #settings-message { min-height: 1.3em; margin: 10px 0 0; color: var(--danger); font-size: .86rem; }
+    #settings-message.success { color: #218653; }
 
     /* ---------- Shell: flex, cannot overlap ---------- */
     .shell { display: flex; height: 100vh; height: 100dvh; overflow: hidden; }
@@ -71,13 +117,22 @@
     }
     .new-chat:hover { border-color: var(--azure); background: var(--azure-tint); color: var(--azure-deep); }
     .rail-label { padding: 14px 20px 8px; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mist); font-weight: 700; }
+    .history-search-wrap { padding: 0 12px 8px; }
+    .history-search { width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--ink); font: inherit; font-size: 0.84rem; outline: none; }
+    .history-search:focus { border-color: var(--azure); box-shadow: 0 0 0 3px var(--azure-tint); }
     .history { flex: 1 1 auto; overflow-y: auto; padding: 0 12px 12px; min-height: 0; }
+    .conversation-row { display: flex; align-items: center; gap: 2px; margin: 2px 0; border-radius: 10px; transition: background 0.15s; }
+    .conversation-row.active { background: var(--azure-tint); }
     .history-item {
-      display: block; width: 100%; text-align: left; background: transparent; border: none;
-      border-radius: 10px; padding: 9px 12px; color: var(--ink-soft); font-size: 0.9rem;
+      flex: 1; min-width: 0; text-align: left; background: transparent; border: none;
+      border-radius: 10px; padding: 9px 10px; color: var(--ink-soft); font-size: 0.88rem;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: background 0.15s, color 0.15s;
     }
     .history-item:hover { background: var(--line-soft); color: var(--ink); }
+    .conversation-actions { display: flex; gap: 1px; padding-right: 4px; opacity: 0.55; }
+    .conversation-row:hover .conversation-actions, .conversation-row:focus-within .conversation-actions { opacity: 1; }
+    .conversation-action { width: 27px; height: 27px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 7px; background: transparent; color: var(--mist); font-size: 0.9rem; }
+    .conversation-action:hover { background: var(--panel); color: var(--ink); }
     .history-empty { padding: 6px 20px; color: var(--mist); font-size: 0.85rem; line-height: 1.5; }
     .rail-foot { padding: 13px 20px; border-top: 1px solid var(--line); font-size: 0.78rem; color: var(--mist); display: flex; align-items: center; gap: 8px; flex: none; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex: none; }
@@ -185,22 +240,216 @@
     @media (max-width: 420px) {
       .model-chip { display: none; }
       .body img.attach { max-width: 100%; }
+      .account { gap: 4px; }
+      #current-user { max-width: 54px; }
+      .logout-btn { padding: 6px 7px; font-size: .76rem; }
+      .topbar h1 { font-size: 1rem; }
     }
     @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ===== MYGPT ANIMATED AI ORB ===== */
+
+.welcome .spark {
+    width: 110px !important;
+    height: 110px !important;
+    display: block;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 30%,
+            #ffffff 0%,
+            #f9d8f0 12%,
+            transparent 32%),
+        radial-gradient(circle at 70% 75%,
+            #ffad91 0%,
+            transparent 45%),
+        linear-gradient(135deg,
+            #f6b8e5,
+            #a98af5 48%,
+            #ed91a9 75%,
+            #ffc99e);
+    box-shadow:
+        0 0 35px rgba(173, 130, 240, 0.35),
+        0 15px 45px rgba(225, 147, 202, 0.2);
+
+    animation: orbFloat 4s ease-in-out infinite;
+}
+
+.welcome .spark path {
+    opacity: 0;
+}
+
+@keyframes orbFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-12px) scale(1.04);
+    }
+}
+
+/* MYGPT LIVE ORB INDICATOR */
+
+.orb-indicator {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: linear-gradient(
+        135deg,
+        #f5a9db,
+        #9276e8,
+        #ffb28f
+    );
+    box-shadow: 0 0 14px rgba(174, 124, 230, 0.5);
+    animation: orbIdle 3s ease-in-out infinite;
+}
+
+@keyframes orbIdle {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* THINKING */
+
+body[data-orb="thinking"] .orb-indicator {
+    animation: orbThinking 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes orbThinking {
+    from {
+        transform: scale(0.85);
+        box-shadow: 0 0 8px #a98af5;
+    }
+    to {
+        transform: scale(1.4);
+        box-shadow: 0 0 25px #d58bdb;
+    }
+}
+
+/* RESPONDING */
+
+body[data-orb="responding"] .orb-indicator {
+    animation: orbResponding 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes orbResponding {
+    from {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    to {
+        transform: scale(1.3);
+        filter: brightness(1.4);
+    }
+}
+
   </style>
 </head>
 <body>
+
+  <!-- AUTHENTICATION SCREEN -->
+<div id="auth-screen">
+
+    <div class="auth-card">
+
+        <div class="auth-brand">
+            <span class="auth-logo">✦</span>
+            <h1>MYGPT</h1>
+        </div>
+
+        <p class="auth-subtitle">
+            Your personal AI assistant
+        </p>
+
+        <!-- LOGIN FORM -->
+        <div id="login-form">
+
+            <h2>Welcome Back</h2>
+            <p>Login to continue your conversations.</p>
+
+            <input
+                type="text"
+                id="login-username"
+                placeholder="Username"
+                autocomplete="username"
+            >
+
+            <input
+                type="password"
+                id="login-password"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
+
+            <button id="login-btn" type="button">Login</button>
+
+            <p>
+                Don't have an account?
+                <a href="#" id="show-register">Create Account</a>
+            </p>
+
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="register-form" style="display:none;">
+
+            <h2>Create Account</h2>
+            <p>Join MYGPT and personalize your AI experience.</p>
+
+            <input
+                type="text"
+                id="register-username"
+                placeholder="Choose a username"
+                autocomplete="username"
+            >
+
+            <input
+                type="email"
+                id="register-email"
+                placeholder="Email address"
+                autocomplete="email"
+            >
+
+            <input
+                type="password"
+                id="register-password"
+                placeholder="Create password (minimum 8 characters)"
+                autocomplete="new-password"
+            >
+
+            <button id="register-btn" type="button">Create Account</button>
+
+            <p>
+                Already have an account?
+                <a href="#" id="show-login">Login</a>
+            </p>
+
+        </div>
+
+        <p id="auth-message"></p>
+
+    </div>
+
+</div>
+
   <div class="shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <svg class="spark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19.2 12.8 L30 16 L19.2 19.2 L16 30 L12.8 19.2 L2 16 L12.8 12.8 Z" fill="var(--azure)"/></svg>
-        <div class="brand-name">Gemini<b>·</b>chat</div>
+        <div class="brand-name">MYGPT</div>
       </div>
       <button class="new-chat" id="new-chat">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         New chat
       </button>
       <div class="rail-label">History</div>
+      <div class="history-search-wrap"><input id="conversation-search" class="history-search" type="search" placeholder="Search conversations" aria-label="Search conversations" autocomplete="off"></div>
       <div class="history" id="history"></div>
       <div class="rail-foot"><span class="dot" id="status-dot"></span><span id="status-text">Checking backend…</span></div>
     </aside>
@@ -213,7 +462,9 @@
         </button>
         <h1 id="topbar-title">New conversation</h1>
         <span class="spacer"></span>
+        <span class="orb-indicator" id="orb-indicator"></span>
         <span class="model-chip" id="model-chip">gemini-3.5-flash</span>
+        <div class="account"><span id="current-user"></span><button class="logout-btn" id="settings-btn" type="button">Settings</button><button class="logout-btn" id="logout-btn" type="button">Log out</button></div>
       </header>
 
       <section class="thread" id="thread"><div class="thread-inner" id="thread-inner"></div></section>
@@ -226,7 +477,7 @@
             <button id="attach-clear" aria-label="Remove attachment">✕</button>
           </div>
           <div class="field">
-            <input type="file" id="image-input" accept="image/*" class="sr-only" />
+            <input type="file" id="image-input" accept="image/png,image/jpeg,image/webp,image/heic,image/heif" class="sr-only" />
             <input type="file" id="pdf-input" accept="application/pdf" class="sr-only" />
             <button class="icon-btn" id="image-btn" title="Attach image" aria-label="Attach image">
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/></svg>
@@ -248,26 +499,244 @@
     </main>
   </div>
 
+  <dialog class="settings-dialog" id="settings-dialog" aria-labelledby="settings-title">
+    <div class="settings-content">
+      <div class="settings-heading">
+        <h2 id="settings-title">Profile &amp; personalisation</h2>
+        <button class="settings-close" id="settings-close" type="button" aria-label="Close settings">×</button>
+      </div>
+      <label for="settings-username">Username</label>
+      <input id="settings-username" type="text" readonly>
+      <label for="settings-full-name">Full name</label>
+      <input id="settings-full-name" type="text" maxlength="100" autocomplete="name" placeholder="Add your name">
+      <label for="settings-assistant-name">Assistant name</label>
+      <input id="settings-assistant-name" type="text" maxlength="40" placeholder="MYGPT">
+      <label for="settings-response-style">Preferred response style</label>
+      <select id="settings-response-style">
+        <option value="friendly">Friendly</option>
+        <option value="professional">Professional</option>
+        <option value="concise">Concise</option>
+        <option value="detailed">Detailed</option>
+      </select>
+      <label for="settings-custom-instructions">Custom instructions</label>
+      <textarea id="settings-custom-instructions" maxlength="4000" placeholder="Tell your assistant how you prefer responses."></textarea>
+      <p id="settings-message" role="status"></p>
+      <div class="settings-actions">
+        <button id="settings-cancel" type="button">Cancel</button>
+        <button id="save-settings" type="button">Save changes</button>
+      </div>
+    </div>
+  </dialog>
+
   <script>
     const $ = (s) => document.querySelector(s);
     const threadInner = $("#thread-inner");
     const input = $("#input");
     const sendBtn = $("#send-btn");
     let backendLive = false;
+    let currentAccount = null;
+    let currentAssistantName = "MYGPT";
+    let activeConversationId = null;
+    let activeConversationKey = null;
+    let conversationSearchTimer = null;
+
+    function setAuthMessage(message, success = false) {
+      const box = $("#auth-message");
+      box.textContent = message || "";
+      box.classList.toggle("success", Boolean(message && success));
+    }
+    function showLogin(message = "") {
+      $("#login-form").style.display = "block";
+      $("#register-form").style.display = "none";
+      setAuthMessage(message);
+    }
+    function showRegister() {
+      $("#login-form").style.display = "none";
+      $("#register-form").style.display = "block";
+      setAuthMessage("");
+    }
+    function showAuthScreen(message = "") {
+      document.body.classList.remove("authenticated");
+      currentAccount = null;
+      currentAssistantName = "MYGPT";
+      activeConversationId = null;
+      activeConversationKey = null;
+      $("#current-user").textContent = "";
+      if (settingsDialog.open) settingsDialog.close();
+      threadInner.innerHTML = "";
+      renderHistoryList([]);
+      setAuthMessage(message);
+    }
+    function authRequest(url, body) {
+      return fetch(url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    }
+    $("#show-register").onclick = (event) => { event.preventDefault(); showRegister(); };
+    $("#show-login").onclick = (event) => { event.preventDefault(); showLogin(); };
+    $("#login-password").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") { event.preventDefault(); $("#login-btn").click(); }
+    });
+    $("#register-password").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") { event.preventDefault(); $("#register-btn").click(); }
+    });
+    $("#register-btn").onclick = async () => {
+      const button = $("#register-btn");
+      button.disabled = true;
+      try {
+        const response = await authRequest("/api/register", {
+          username: $("#register-username").value,
+          email: $("#register-email").value,
+          password: $("#register-password").value,
+        });
+        const data = await response.json();
+        if (!response.ok) { setAuthMessage(data.error || "Could not create account."); return; }
+        $("#login-username").value = $("#register-username").value.trim();
+        $("#login-password").value = "";
+        showLogin("Account created. Please log in.");
+        $("#auth-message").classList.add("success");
+      } catch (error) {
+        setAuthMessage("Could not reach MYGPT. Check your connection and try again.");
+      } finally { button.disabled = false; }
+    };
+    $("#login-btn").onclick = async () => {
+      const button = $("#login-btn");
+      button.disabled = true;
+      try {
+        const response = await authRequest("/api/login", {
+          username: $("#login-username").value,
+          password: $("#login-password").value,
+        });
+        const data = await response.json();
+        if (!response.ok) { setAuthMessage(data.error || "Login failed."); return; }
+        await enterChat(data.user);
+      } catch (error) {
+        setAuthMessage("Could not reach MYGPT. Check your connection and try again.");
+      } finally { button.disabled = false; }
+    };
+    $("#logout-btn").onclick = async () => {
+      const button = $("#logout-btn");
+      button.disabled = true;
+      try {
+        const response = await fetch("/api/logout", {
+          method: "POST", credentials: "same-origin",
+        });
+        if (!response.ok) { alert("Could not log out. Please try again."); return; }
+        showAuthScreen("You have been logged out.");
+        showLogin("You have been logged out.");
+      } catch (error) {
+        alert("Could not reach MYGPT to log out. Please check your connection.");
+      } finally { button.disabled = false; }
+    };
+    const settingsDialog = $("#settings-dialog");
+    $("#settings-btn").onclick = openSettings;
+    $("#settings-close").onclick = () => settingsDialog.close();
+    $("#settings-cancel").onclick = () => settingsDialog.close();
+    $("#save-settings").onclick = saveSettings;
+    async function openSettings() {
+      setSettingsMessage("");
+      const existing = currentAccount || {};
+      $("#settings-username").value = existing.username || "";
+      $("#settings-full-name").value = existing.full_name || "";
+      $("#settings-assistant-name").value = existing.assistant_name || "MYGPT";
+      $("#settings-response-style").value = existing.response_style || "friendly";
+      $("#settings-custom-instructions").value = existing.custom_instructions || "";
+      settingsDialog.showModal();
+      try {
+        const response = await fetch("/api/me", { credentials: "same-origin" });
+        if (response.status === 401) {
+          settingsDialog.close();
+          showAuthScreen("Your session has expired. Please log in again.");
+          return;
+        }
+        const data = await response.json();
+        if (!response.ok) { setSettingsMessage(data.error || "Could not load your profile."); return; }
+        const user = data.user;
+        $("#settings-username").value = user.username || "";
+        $("#settings-full-name").value = user.full_name || "";
+        $("#settings-assistant-name").value = user.assistant_name || "MYGPT";
+        $("#settings-response-style").value = user.response_style || "friendly";
+        $("#settings-custom-instructions").value = user.custom_instructions || "";
+      } catch (error) {
+        setSettingsMessage("Could not reach MYGPT. Check your connection and try again.");
+      }
+    }
+    function setSettingsMessage(message, success = false) {
+      const box = $("#settings-message");
+      box.textContent = message || "";
+      box.classList.toggle("success", Boolean(message && success));
+    }
+    async function saveSettings() {
+      const button = $("#save-settings");
+      button.disabled = true;
+      setSettingsMessage("");
+      try {
+        const profileResponse = await fetch("/api/me", {
+          method: "PATCH", credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ full_name: $("#settings-full-name").value }),
+        });
+        const profile = await profileResponse.json();
+        if (profileResponse.status === 401) {
+          settingsDialog.close();
+          showAuthScreen("Your session has expired. Please log in again.");
+          return;
+        }
+        if (!profileResponse.ok) { setSettingsMessage(profile.error || "Could not save your profile."); return; }
+
+        const settingsResponse = await fetch("/api/settings", {
+          method: "PUT", credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            assistant_name: $("#settings-assistant-name").value,
+            response_style: $("#settings-response-style").value,
+            custom_instructions: $("#settings-custom-instructions").value,
+          }),
+        });
+        const settingsData = await settingsResponse.json();
+        if (settingsResponse.status === 401) {
+          settingsDialog.close();
+          showAuthScreen("Your session has expired. Please log in again.");
+          return;
+        }
+        if (!settingsResponse.ok) { setSettingsMessage(settingsData.error || "Could not save your settings."); return; }
+
+        currentAccount = { ...profile.user, ...settingsData.settings };
+        currentAssistantName = currentAccount.assistant_name;
+        $("#current-user").textContent = "@" + currentAccount.username;
+        setSettingsMessage("Your profile and preferences are saved.", true);
+      } catch (error) {
+        setSettingsMessage("Could not reach MYGPT. Check your connection and try again.");
+      } finally { button.disabled = false; }
+    }
 
     const SPARK_SM = `<svg viewBox="0 0 32 32" style="width:17px;height:17px" aria-hidden="true"><path d="M16 2 L19.2 12.8 L30 16 L19.2 19.2 L16 30 L12.8 19.2 L2 16 L12.8 12.8 Z" fill="var(--azure)"/></svg>`;
 
     /* ---------------- Markdown rendering ---------------- */
     function escapeHtml(s) {
-      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
     function inlineMd(s) {
       // inline code first (protect its contents)
       const codes = [];
       s = s.replace(/`([^`]+)`/g, (m, c) => { codes.push(c); return "\u0001" + (codes.length - 1) + "\u0001"; });
+
+      // Build links only from absolute HTTP(S) URLs. Keep generated anchors in
+      // placeholders so later text escaping cannot turn them back into markup.
+      const links = [];
+      s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (match, label, rawUrl) => {
+        let url;
+        try { url = new URL(rawUrl); } catch (error) { return match; }
+        if (url.protocol !== "http:" && url.protocol !== "https:") return match;
+        links.push('<a href="' + escapeHtml(url.href) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(label) + "</a>");
+        return "\u0003" + (links.length - 1) + "\u0003";
+      });
+
       s = escapeHtml(s);
-      // links [text](url)
-      s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
       // bold then italic
       s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
       s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
@@ -275,6 +744,8 @@
       s = s.replace(/(^|[^_\w])_(?!\s)([^_\n]+?)_/g, "$1<em>$2</em>");
       // restore inline code
       s = s.replace(/\u0001(\d+)\u0001/g, (m, i) => '<code class="inline">' + escapeHtml(codes[+i]) + "</code>");
+      // Restore the vetted, fully escaped links after text formatting.
+      s = s.replace(/\u0003(\d+)\u0003/g, (m, i) => links[+i]);
       return s;
     }
     function renderMarkdown(md) {
@@ -324,6 +795,7 @@
       wrap.innerHTML =
         (role === "you" ? '<div class="avatar you">YOU</div>' : '<div class="avatar bot">' + SPARK_SM + "</div>") +
         '<div class="bubble"><div class="role">' + (role === "you" ? "You" : "Gemini") + '</div><div class="body"></div></div>';
+      wrap.querySelector(".role").textContent = role === "you" ? "You" : currentAssistantName;
       const body = wrap.querySelector(".body");
       if (role === "you") {
         if (text) { const p = document.createElement("p"); p.textContent = text; body.appendChild(p); }
@@ -340,10 +812,17 @@
       const wrap = document.createElement("div");
       wrap.className = "msg bot";
       wrap.innerHTML = '<div class="avatar bot">' + SPARK_SM + '</div><div class="bubble"><div class="role">Gemini</div><div class="body"><div class="typing"><i></i><i></i><i></i></div></div></div>';
+      wrap.querySelector(".role").textContent = currentAssistantName;
       threadInner.appendChild(wrap); scrollDown(); return wrap;
     }
     function scrollDown() { const t = $("#thread"); t.scrollTop = t.scrollHeight; }
-    function clearThread() { threadInner.innerHTML = ""; $("#topbar-title").textContent = "New conversation"; showWelcome(); closeSidebar(); }
+    function clearThread() {
+      activeConversationId = null;
+      activeConversationKey = null;
+      threadInner.innerHTML = "";
+      $("#topbar-title").textContent = "New conversation";
+      showWelcome();
+    }
 
     /* ---------------- Welcome ---------------- */
     const EXAMPLES = [
@@ -356,9 +835,11 @@
       w.className = "welcome";
       w.innerHTML =
         '<svg class="spark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 L19.2 12.8 L30 16 L19.2 19.2 L16 30 L12.8 19.2 L2 16 L12.8 12.8 Z" fill="var(--azure)"/></svg>' +
-        "<h2>How can I help today?</h2>" +
-        "<p>Chat with Google's Gemini models. Attach an <b>image</b> or <b>PDF</b> and I'll reason over it in the same conversation.</p>" +
+        "<h2></h2><p></p>" +
         '<div class="suggests"></div>';
+      const welcomeName = currentAccount && (currentAccount.full_name || currentAccount.username);
+      w.querySelector("h2").textContent = `Hey ${welcomeName || "there"}! What are we working on today?`;
+      w.querySelector("p").textContent = `I'm ${currentAssistantName}, your personal AI assistant. Ask me anything, upload an image or PDF, and I'll reason over it in the same conversation.`;
       const s = w.querySelector(".suggests");
       EXAMPLES.forEach((ex) => {
         const b = document.createElement("button");
@@ -378,39 +859,230 @@
       const box = $("#history");
       box.innerHTML = "";
       if (!items.length) { box.innerHTML = '<div class="history-empty">Your messages will appear here once you start chatting.</div>'; return; }
-      items.slice().reverse().forEach((it) => {
-        const b = document.createElement("button");
-        b.className = "history-item";
-        b.textContent = it.prompt || "(attachment)";
-        b.title = it.prompt || "";
-        b.onclick = () => { input.value = it.prompt || ""; input.focus(); autoGrow(); closeSidebar(); };
-        box.appendChild(b);
+      items.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "conversation-row";
+        if (String(item.id) === String(activeConversationKey)) row.classList.add("active");
+
+        const select = document.createElement("button");
+        select.type = "button";
+        select.className = "history-item";
+        select.textContent = item.title || "New chat";
+        select.title = item.title || "New chat";
+        select.onclick = () => openConversation(item.id);
+        row.appendChild(select);
+
+        if (!item.legacy) {
+          const actions = document.createElement("span");
+          actions.className = "conversation-actions";
+          const rename = document.createElement("button");
+          rename.type = "button";
+          rename.className = "conversation-action";
+          rename.setAttribute("aria-label", "Rename conversation");
+          rename.title = "Rename conversation";
+          rename.textContent = "✎";
+          rename.onclick = () => renameConversation(item);
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "conversation-action";
+          remove.setAttribute("aria-label", "Delete conversation");
+          remove.title = "Delete conversation";
+          remove.textContent = "×";
+          remove.onclick = () => deleteConversation(item);
+          actions.append(rename, remove);
+          row.appendChild(actions);
+        }
+        box.appendChild(row);
       });
     }
 
-    /* ---------------- Init ---------------- */
-    async function init() {
-      showWelcome();
+    async function refreshConversations(search = $("#conversation-search").value) {
       try {
-        const res = await fetch("/api/history");
-        if (!res.ok) throw new Error("no backend");
+        const res = await fetch("/api/conversations?q=" + encodeURIComponent(search || ""), {
+          credentials: "same-origin",
+        });
+        if (res.status === 401) {
+          showAuthScreen("Your session has expired. Please log in again.");
+          return null;
+        }
+        if (!res.ok) throw new Error("Could not load conversations.");
         const data = await res.json();
         backendLive = true;
         setStatus(true, data.model);
         if (data.model) $("#model-chip").textContent = data.model;
-        renderHistoryList(data.history || []);
-        if ((data.history || []).length) {
-          removeWelcome();
-          data.history.forEach((it) => {
-            addMessage({ role: "you", text: it.prompt, imageSrc: it.image ? "data:image/png;base64," + it.image : null });
-            addMessage({ role: "bot", text: it.response });
-          });
-          $("#topbar-title").textContent = "Conversation";
-        }
+        renderHistoryList(data.conversations || []);
+        return data.conversations || [];
       } catch (e) {
+        alert(e.message || "Could not load conversations.");
+        return null;
+      }
+    }
+
+    async function startNewConversation({ preserveComposer = false } = {}) {
+      if (!backendLive) {
+        clearThread();
+        closeSidebar();
+        return true;
+      }
+      try {
+        const response = await fetch("/api/conversations", {
+          method: "POST", credentials: "same-origin",
+        });
+        const data = await response.json();
+        if (response.status === 401) {
+          showAuthScreen("Your session has expired. Please log in again.");
+          return false;
+        }
+        if (!response.ok) throw new Error(data.error || "Could not create a conversation.");
+        clearThread();
+        activeConversationId = data.conversation.id;
+        activeConversationKey = data.conversation.id;
+        $("#topbar-title").textContent = "New conversation";
+        $("#conversation-search").value = "";
+        if (!preserveComposer) {
+          if (input) input.value = "";
+          clearAttach();
+        }
+        await refreshConversations();
+        closeSidebar();
+        input.focus();
+        return true;
+      } catch (e) {
+        alert(e.message || "Could not create a conversation.");
+        return false;
+      }
+    }
+
+    function imageDataUrl(base64) {
+      let mime = "image/png";
+      if (base64.startsWith("/9j/")) mime = "image/jpeg";
+      else if (base64.startsWith("UklGR")) mime = "image/webp";
+      else {
+        try {
+          const header = atob(base64.slice(0, 64));
+          if (header.slice(4, 8) === "ftyp") {
+            const brand = header.slice(8, 12);
+            mime = ["heic", "heix", "hevc", "hevx"].includes(brand)
+              ? "image/heic" : "image/heif";
+          }
+        } catch (error) {}
+      }
+      return "data:" + mime + ";base64," + base64;
+    }
+
+    async function openConversation(key) {
+      try {
+        const response = await fetch("/api/conversations/" + encodeURIComponent(key), {
+          credentials: "same-origin",
+        });
+        const data = await response.json();
+        if (response.status === 401) {
+          showAuthScreen("Your session has expired. Please log in again.");
+          return;
+        }
+        if (!response.ok) throw new Error(data.error || "Could not open this conversation.");
+        activeConversationKey = key;
+        activeConversationId = data.conversation.legacy ? null : data.conversation.id;
+        threadInner.innerHTML = "";
+        if (!data.messages.length) showWelcome();
+        data.messages.forEach((message) => {
+          addMessage({
+            role: "you", text: message.prompt,
+            imageSrc: message.image ? imageDataUrl(message.image) : null,
+          });
+          addMessage({ role: "bot", text: message.response });
+        });
+        $("#topbar-title").textContent = data.conversation.title || "New chat";
+        await refreshConversations();
+        closeSidebar();
+      } catch (e) {
+        alert(e.message || "Could not open this conversation.");
+      }
+    }
+
+    async function renameConversation(item) {
+      const title = window.prompt("Conversation name", item.title || "");
+      if (title === null) return;
+      try {
+        const response = await fetch("/api/conversations/" + encodeURIComponent(item.id), {
+          method: "PATCH", credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title }),
+        });
+        const data = await response.json();
+        if (response.status === 401) {
+          showAuthScreen("Your session has expired. Please log in again.");
+          return;
+        }
+        if (!response.ok) throw new Error(data.error || "Could not rename this conversation.");
+        if (String(activeConversationId) === String(item.id)) {
+          $("#topbar-title").textContent = data.conversation.title;
+        }
+        await refreshConversations();
+      } catch (e) {
+        alert(e.message || "Could not rename this conversation.");
+      }
+    }
+
+    async function deleteConversation(item) {
+      if (!window.confirm("Delete this conversation and its messages? This cannot be undone.")) return;
+      try {
+        const response = await fetch("/api/conversations/" + encodeURIComponent(item.id), {
+          method: "DELETE", credentials: "same-origin",
+        });
+        const data = await response.json();
+        if (response.status === 401) {
+          showAuthScreen("Your session has expired. Please log in again.");
+          return;
+        }
+        if (!response.ok) throw new Error(data.error || "Could not delete this conversation.");
+        if (String(activeConversationId) === String(item.id)) {
+          activeConversationId = null;
+          activeConversationKey = null;
+          threadInner.innerHTML = "";
+          $("#topbar-title").textContent = "New conversation";
+          showWelcome();
+        }
+        await refreshConversations();
+      } catch (e) {
+        alert(e.message || "Could not delete this conversation.");
+      }
+    }
+
+    /* ---------------- Authenticated chat startup ---------------- */
+    async function enterChat(user) {
+      document.body.classList.add("authenticated");
+      currentAccount = user || {};
+      currentAssistantName = currentAccount.assistant_name || "MYGPT";
+      activeConversationId = null;
+      activeConversationKey = null;
+      $("#current-user").textContent = currentAccount.username ? "@" + currentAccount.username : "";
+      threadInner.innerHTML = "";
+      showWelcome();
+      const conversations = await refreshConversations("");
+      if (conversations === null) {
         backendLive = false;
         setStatus(false);
         renderHistoryList([]);
+      }
+    }
+
+    $("#conversation-search").addEventListener("input", () => {
+      clearTimeout(conversationSearchTimer);
+      conversationSearchTimer = setTimeout(() => refreshConversations(), 250);
+    });
+    async function init() {
+      try {
+        const response = await fetch("/api/me", { credentials: "same-origin" });
+        if (!response.ok) {
+          showAuthScreen("Please log in to continue.");
+          return;
+        }
+        const data = await response.json();
+        if (data.logged_in && data.user) await enterChat(data.user);
+        else showAuthScreen("Please log in to continue.");
+      } catch (error) {
+        showAuthScreen("Could not reach MYGPT. Check your connection and try again.");
       }
     }
     function setStatus(live, model) {
@@ -439,11 +1111,25 @@
     }
     $("#attach-clear").onclick = clearAttach;
     function clearAttach() { pending = { image: null, pdf: null }; $("#image-input").value = ""; $("#pdf-input").value = ""; $("#attach-preview").style.display = "none"; }
+    function setOrbState(state) {
+    document.body.dataset.orb = state;
+}
 
+function showOrbResponse() {
+    setOrbState("responding");
+
+    setTimeout(() => {
+        setOrbState("idle");
+    }, 1200);
+}
     /* ---------------- Send ---------------- */
     async function send() {
       const text = input.value.trim();
       if (!text && !pending.image && !pending.pdf) return;
+      if (backendLive && !activeConversationId) {
+        const started = await startNewConversation({ preserveComposer: true });
+        if (!started) return;
+      }
       removeWelcome();
       $("#topbar-title").textContent = "Conversation";
 
@@ -452,41 +1138,53 @@
 
       const fd = new FormData();
       fd.append("prompt", text);
+      if (activeConversationId) fd.append("conversation_id", String(activeConversationId));
       if (pending.image) fd.append("image", pending.image);
       if (pending.pdf) fd.append("pdf_file", pending.pdf);
 
       input.value = ""; autoGrow(); clearAttach();
-      const typing = addTyping(); sendBtn.disabled = true;
+      const typing = addTyping();
+      sendBtn.disabled = true;
+      setOrbState("thinking");
 
       if (!backendLive) {
         setTimeout(() => {
           typing.remove();
+          showOrbResponse();
           addMessage({ role: "bot", text: "This is a preview — the Python backend isn't running, so I can't reach Gemini yet.\n\nTo get live answers:\n\n1. `pip install -r requirements.txt`\n2. Add your key to `.env`\n3. `python app.py` — then open http://localhost:5000" });
           sendBtn.disabled = false;
         }, 450);
         return;
       }
       try {
-        const res = await fetch("/api/chat", { method: "POST", body: fd });
+        const res = await fetch("/api/chat", { method: "POST", body: fd, credentials: "same-origin" });
         const data = await res.json();
         typing.remove();
+        showOrbResponse();
+        if (res.status === 401) {
+          showAuthScreen("Your session has expired. Please log in again.");
+          return;
+        }
         if (!res.ok) addMessage({ role: "bot", text: data.error || "Something went wrong. Please try again." });
-        else { addMessage({ role: "bot", text: data.response }); refreshHistory(); }
+        else {
+          addMessage({ role: "bot", text: data.response });
+          $("#topbar-title").textContent = data.title || "Conversation";
+          activeConversationId = data.conversation_id || activeConversationId;
+          activeConversationKey = activeConversationId;
+          refreshConversations();
+        }
       } catch (e) {
         typing.remove();
+        showOrbResponse();
         addMessage({ role: "bot", text: "Couldn't reach the server. Is the backend still running?" });
       } finally { sendBtn.disabled = false; }
     }
-    async function refreshHistory() {
-      try { const res = await fetch("/api/history"); const data = await res.json(); renderHistoryList(data.history || []); } catch (e) {}
-    }
-
     /* ---------------- Input UX ---------------- */
     function autoGrow() { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 168) + "px"; }
     input.addEventListener("input", autoGrow);
     input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
     sendBtn.onclick = send;
-    $("#new-chat").onclick = clearThread;
+    $("#new-chat").onclick = startNewConversation;
 
     /* ---------------- Drawer ---------------- */
     function openSidebar() { $("#sidebar").classList.add("open"); $("#scrim").classList.add("show"); }
