@@ -131,4 +131,7 @@ The Python suite uses temporary databases, synthetic accounts, and mocked Gemini
 
 The repository includes a `Procfile` and Render configuration. Configure `SECRET_KEY` and `GEMINI_API_KEY` in the hosting provider's environment settings. Use persistent storage for SQLite if the host's filesystem is ephemeral, and back up the database before upgrades.
 
+<img width="222" height="160" alt="image" src="https://github.com/user-attachments/assets/179ce0b2-4b37-4efb-a23d-46e643a790d5" />
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/560a21f3-fc49-4344-8bac-31a9e66449fa" />
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/39566354-3224-4b0d-9274-936c94ff667a" />
 
