@@ -131,6 +131,4 @@ The Python suite uses temporary databases, synthetic accounts, and mocked Gemini
 
 The repository includes a `Procfile` and Render configuration. Configure `SECRET_KEY` and `GEMINI_API_KEY` in the hosting provider's environment settings. Use persistent storage for SQLite if the host's filesystem is ephemeral, and back up the database before upgrades.
 
-## License
 
-MYGPT is distributed under the MIT License; see [LICENSE](LICENSE).
